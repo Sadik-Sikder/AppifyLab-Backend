@@ -10,9 +10,20 @@ import uploadRoutes from "./routes/user.js";
 dotenv.config();
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:3000",                // local dev
+  "https://appifylab-frontend.onrender.com" // deployed frontend
+];
+
 app.use(cors({
-  origin: "http://localhost:3000", 
-  credentials: true,                
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, 
 }));
 app.use(express.json());
 app.use(cookieParser());
